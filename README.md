@@ -1,4 +1,3 @@
-
 # Project Description
 
 1.  **users_crud**: This directory contains the Users CRUD application using a MySQL database. The main.go file initializes the HTTP server and defines the routes for CRUD operations. The db.go file manages the MySQL database connection. The user.go file defines the User model and contains the handlers for various CRUD operations.
@@ -42,7 +41,7 @@ Run docker-compose up to build and run the containers for MySQL, Users CRUD, Art
 5. **DELETE** /categories/{id}<span style="white-space: pre">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> Delete a category by ID
 
 
-## Docker Setup
+## Project Setup
 
 
 
@@ -58,7 +57,6 @@ Follow these steps to run the project using Docker:
 
 
 
-### Build the Docker Image
 
 
 
@@ -81,7 +79,7 @@ Follow these steps to run the project using Docker:
    ```
 
 
-3. Build && run Project with local MySQL <span style="white-space: pre">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> **Note** :: update config/dev_config.json file
+3. Build && run Project locally with local MySQL <span style="white-space: pre">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> **Note** :: update config/dev_config.json file
 
 
 
@@ -89,12 +87,12 @@ Follow these steps to run the project using Docker:
    go build -o go-crud && ./go-crud
    ```
 
+## OR
+
+### Run the Docker Composer for complete project setup
 
 
-### Run the Docker Container SQL && API server
-
-
-1. Start a Docker Composer:
+3. Start a Docker Composer:
 
 
 
@@ -108,7 +106,7 @@ This command runs the Docker composer and forwards the host's port 8080 to the c
 
 
 
-2. Open your web browser and access http://localhost:8080 to see the project in action.
+###  Open your web browser and access http://localhost:8080 to see the project in action.
 
 
 
@@ -117,7 +115,7 @@ This command runs the Docker composer and forwards the host's port 8080 to the c
 
 
 
-If your project requires any configuration, mention the steps to set up the configuration in this section.
+All Configuration set in config folder && update values according to your environment
 
 
 
