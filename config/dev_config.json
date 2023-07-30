@@ -1,0 +1,18 @@
+{
+  "file_name": "config/dev_config.json",
+  "db_type": "MYSQL",
+  "db_host": "tcp(db)",
+  "db_name": "crud",
+  "db_user": "root",
+  "db_password": "S@lim786!",
+  "db_dns": "",
+  "ssl_certificate": "",
+  "ssl_certificate_key": "",
+  "assets_file_absolute": "/templates/",
+  "assets_file_relative": "templates/",
+  "port": "8080",
+  "ssl_Port": "",
+  "is_ssl": "0",
+  "log_level": "5",
+  "log_console": "yes"
+}

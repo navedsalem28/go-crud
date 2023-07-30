@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  api:
+    image: api
+    container_name: api-container
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    container_name: sql-container
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: S@lim786!
+      MYSQL_DATABASE: crud
+    ports:
+      - "3307:3306" # Map container's port 3306 to host's port 3307
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+

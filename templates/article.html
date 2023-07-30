@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>User CRUD</title>
+
+  <style>
+    body {
+      justify-content: center;
+      align-items: center;
+      text-align: center; /* Align all content in the center */
+    }
+
+    input[type="text"] {
+      width: 250px; /* Set the desired width of the input field */
+      padding: 8px;
+      margin: 5px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 56%;
+      margin-left: 23%;
+    }
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+    input[type="text"] {
+      width: 25%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 8px 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+    #buttonContainer {
+      margin-top: 20px;
+      alignment: center;
+    }
+
+  </style>
+</head>
+<body>
+<h1>Article CRUD</h1>
+
+<!-- Form for creating/editing a user -->
+<h2>Create/Edit Article</h2>
+<form id="articleForm">
+  <input type="hidden" id="articleId" name="id">
+  <label for="title">Title:</label>
+  <input type="text" id="title" name="title" required>
+  <label for="price">Price:</label>
+  <input type="text" id="price" name="price" required>
+  <br>
+  <div id="buttonContainer">
+    <button type="button" id="createButton" onclick="submitForm('create')">Create</button>
+    <button type="button" id="updateButton" style="display: none;" onclick="submitForm('update')">Update</button>
+  </div>
+
+
+</form>
+
+<!-- Table to display the list of users -->
+<h2>Article List</h2>
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Price</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="articleList">
+  <!-- Users will be dynamically added here -->
+  </tbody>
+</table>
+
+<script>
+  // Function to fetch users from the server and populate the table
+  function fetchArticles() {
+    fetch('/Articles')
+            .then(response => response.json())
+            .then(data => {
+              const articleList = document.getElementById('articleList');
+              articleList.innerHTML = '';
+
+              if (data && Array.isArray(data.articles)) {
+                data.articles.forEach(article => {
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                                <td>${article.id}</td>
+                                <td>${article.title}</td>
+                                <td>${article.price}</td>
+                                <td>
+                                    <button onclick="editArticle(${article.id})">Edit</button>
+                                    <button onclick="deleteArticle(${article.id})">Delete</button>
+                                </td>
+                            `;
+                  articleList.appendChild(row);
+                });
+              } else {
+                console.error('Error fetching article: Invalid data format');
+              }
+            })
+            .catch(error => console.error('Error fetching article:', error));
+  }
+
+  function submitForm(action) {
+    const articleId = document.getElementById('articleId').value;
+    const title = document.getElementById('title').value;
+    const price = document.getElementById('price').value;
+
+    if (action === 'create') {
+      createArticle(title, price);
+    } else if (action === 'update') {
+      updateArticle(articleId, title, price);
+    }
+  }
+
+
+  // Function to handle user deletion
+  function deleteArticle(id) {
+    if (confirm('Are you sure you want to delete this article?')) {
+      fetch(`/Articles/${id}`, {
+        method: 'DELETE'
+      })
+              .then(fetchArticles)
+              .catch(error => console.error('Error deleting article:', error));
+    }
+  }
+
+
+  // Function to handle user editing
+  function editArticle(id) {
+    fetch(`/Articles/${id}`)
+            .then(response => response.json())
+            .then(data => {
+              const article = data.article;
+              if (article) {
+                document.getElementById('articleId').value = article.id;
+                document.getElementById('title').value = article.title;
+                document.getElementById('price').value = article.price;
+                document.getElementById('updateButton').style.display = 'block';
+                document.getElementById('createButton').style.display = 'none';
+              } else {
+                console.error('Error fetching article details: Article not found');
+              }
+            })
+            .catch(error => console.error('Error fetching Article details:', error));
+  }
+
+  // Function to update an existing user
+  function updateArticle(userId, title, price) {
+    fetch(`/Articles/${userId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: JSON.stringify({
+        "title": title ,
+        "price": price ,
+      })
+
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status !="200"){
+                window.alert(data.message);
+              }
+
+              // Reset the form after update
+              document.getElementById('articleForm').reset();
+              document.getElementById('articleId').value = ''; // Reset article ID after update
+
+              // Show the "Create" button and hide the "Update" button
+              document.getElementById('createButton').style.display = 'block';
+              document.getElementById('updateButton').style.display = 'none';
+
+              // Fetch users again to refresh the table
+              fetchArticles();
+            })
+            .catch(error => console.error('Error updating article:', error));
+
+  }
+
+
+  // Function to create a new user
+  function createArticle(title, price) {
+    fetch('/Articles', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "title": title ,
+        "price": price ,
+      })
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.status !="200"){
+                window.alert(data.message);
+              }
+              // Reset the form after creation
+              document.getElementById('articleForm').reset();
+
+              // Fetch article again to refresh the table
+              fetchArticles();
+            })
+            .catch(error => console.error('Error creating article:', error));
+  }
+
+  // Fetch users on page load
+  fetchArticles();
+</script>
+</body>
+</html>
